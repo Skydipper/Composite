@@ -1,0 +1,7 @@
+base:
+  build: .
+  ports:
+    - "4505:4505"
+  environment:
+    PORT: 4505
+  container_name: composite

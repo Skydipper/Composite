@@ -1,0 +1,1 @@
+from composite.routes.api.v1.composite_service_router import composite_service_v1

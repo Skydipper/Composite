@@ -1,0 +1,19 @@
+develop:
+    extends:
+      file: base.yml
+      service: base
+    container_name: composite-develop
+    environment:
+      CT_REGISTER_MODE: auto
+      ENVIRONMENT: dev
+      DEBUG: "True"
+      CT_URL: http://mymachine:9000
+      CT_TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
+      LOCAL_URL: http://mymachine:4505
+      EE_PRIVATE_KEY: ${EE_PRIVATE_KEY}
+      API_VERSION: v1
+    command: develop
+    volumes:
+      - ./composite:/opt/composite/composite
+    restart: always
+

@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: composite
+  labels:
+    name: {name}
+    app: composite
+  name: {name}
+spec:
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        name: {name}
+    spec:
+      tolerations:
+      - key: "type"
+        operator: "Equal"
+        value: "composite"
+        effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: type
+                operator: In
+                values:
+                - composite
+      containers:
+      - name: {name}
+        image: vizzuality/{name}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "128Mi"
+          limits:
+            memory: "512Mi"
+        args:
+          - start
+        env:
+          - name: PORT
+            value: "4505"
+          - name: ENVIRONMENT
+            value: prod
+          - name: LOCAL_URL
+            value: http://{name}.gfw.svc.cluster.local:4505
+          - name: CT_URL
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_URL
+          - name: CT_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_TOKEN
+          - name: CT_REGISTER_MODE
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: CT_REGISTER_MODE
+          - name: API_VERSION
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: API_VERSION
+          - name: EE_PRIVATE_KEY
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: EE_PRIVATE_KEY_JSON
+        ports:
+          - containerPort: 4505
+      restartPolicy: Always

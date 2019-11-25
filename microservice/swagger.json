@@ -1,0 +1,68 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Composite",
+        "description": "## Composite imagery service",
+        "version": "1.0.0"
+    },
+    "host": "api.skydipper.com",
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "produces": [
+        "application/vnd.api+json"
+    ],
+    "paths": {
+        "/v1/composite": {
+            "get": {
+                "description": "Get a composite based on a geostore id.",
+                "tags": [
+                    "composite"
+                ],
+                "parameters": [
+                    {
+                        "name": "geostore",
+                        "in": "query",
+                        "description": "Hash of the geostore",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "period",
+                        "in": "query",
+                        "description": "Period of time (default '2001-01-01, 2017-02-01')",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Results obtained",
+                        "schema": {
+                            "$ref": "#/definitions/USEFORMA250"
+                        }
+                    },
+                    "404": {
+                        "description": "Geostore not found",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "500": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Errors"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
