@@ -23,7 +23,7 @@ private_key_file = gee.get('privatekey_file')
 if private_key_file:
     logging.info(f'Initilizing EE with privatekey.json credential file: {ee_user} | {private_key_file}')
     credentials = ee.ServiceAccountCredentials(ee_user, private_key_file)
-    ee.Initialize(credentials) #, use_cloud_api=False)
+    ee.Initialize(credentials, use_cloud_api=False)
     ee.data.setDeadline(60000)
 else:
     raise ValueError("privatekey.json file not found. Unable to authenticate EE.")

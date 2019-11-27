@@ -23,6 +23,7 @@ class CompositeService(object):
             clip_region = ee.Geometry({'type': 'Polygon',
                                        'coordinates': [get_clip_vertex_list(geojson)]
                                    })
+            geom_list = geojson.get('features')[0].get('geometry').get('coordinates')
             if not date_range:
                 dates = CompositeService.get_last_3months()
             dates = date_range[1:-1].split(',')
@@ -38,12 +39,13 @@ class CompositeService(object):
                 sat_img = sat_img.divide(100*100)
                 logging.info(f"[COMPOSITE SERVICE]: Sat image 2")
             logging.info(f"[COMPOSITE SERVICE]: Sat image 3")
-            image = sat_img.visualize(**band_viz)
-            result_dic['thumb_url'] = image.getThumbUrl({'dimensions': thumb_size, 'region': region})
-            result_dic['tile_url'] = CompositeService.get_image_url(image.clip(clip_region))
+            image = sat_img.clip(clip_region).visualize(**band_viz)
+            logging.info(f"[Composite service] dimensions {thumb_size}")
+            result_dic['thumb_url'] = image.getThumbUrl({'dimensions': thumb_size, 'region': geom_list})
+            result_dic['tile_url'] = CompositeService.get_image_url(image)
             if get_dem:
-                dem_img = ee.Image('JAXA/ALOS/AW3D30_V1_1').select('AVE')
-                dem_url = dem_img.getThumbUrl({'dimensions':thumb_size, 'min':-479, 'max':8859.0, 'region': region})
+                dem_img = ee.Image('JAXA/ALOS/AW3D30_V1_1').select('AVE').clip(clip_region)
+                dem_url = dem_img.getThumbUrl({'dimensions':thumb_size, 'min':-479, 'max':8859.0, 'region': geom_list})
                 result_dic['dem'] = dem_url
             return result_dic
         except Exception as error:
