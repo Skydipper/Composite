@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  namespace: composite
+  namespace: default
   labels:
     name: {name}
     app: composite

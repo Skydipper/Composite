@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  namespace: composite
+  namespace: default
   name: {name}
 spec:
   scaleTargetRef:
