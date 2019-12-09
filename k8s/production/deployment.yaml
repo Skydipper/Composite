@@ -60,7 +60,7 @@ spec:
             valueFrom:
                 secretKeyRef:
                   name: mssecrets
-                  key: EE_PRIVATE_KEY_JSON
+                  key: EE_PRIVATE_KEY
         ports:
           - containerPort: 4505
       restartPolicy: Always
