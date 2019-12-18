@@ -23,6 +23,7 @@ def get_geo_by_hash(func):
             except GeostoreNotFound:
                 return error(status=404, detail='Geostore not found')
         kwargs["geojson"] = d['geojson']
+        kwargs["bbox"] = d["bbox"]
         return func(*args, **kwargs)
     return wrapper
 
@@ -30,7 +31,7 @@ def get_composite_params(func):
     """Get instrument"""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if request.method in ['GET','POST']:
+        if request.method in ['GET', 'POST']:
             instrument = request.args.get('instrument', False)
             if not instrument:
                 instrument = 'landsat'
@@ -48,6 +49,11 @@ def get_composite_params(func):
                 get_dem = True
             else:
                 get_dem = False
+            get_files = request.args.get('get_files', False)
+            if get_files and get_files.lower() == 'true':
+                get_files = True
+            else:
+                get_files = False
             cloudscore_thresh = request.args.get('cloudscore_thresh', False)
             if not cloudscore_thresh:
                 cloudscore_thresh = 5
@@ -55,6 +61,7 @@ def get_composite_params(func):
                 cloudscore_thresh = int(cloudscore_thresh)
         logging.info(f"[Middleware] DATE RANGE: {date_range}")
         kwargs['get_dem'] = get_dem
+        kwargs['get_files'] = get_files
         kwargs['thumb_size'] = thumb_size
         kwargs['date_range'] = date_range
         kwargs['instrument'] = instrument

@@ -1,7 +1,6 @@
 Flask==1.1.1
 earthengine-api==0.1.207
 CTRegisterMicroserviceFlask==0.4.0
-requests==2.22.0
 shapely==1.7a1
 pyproj==1.9.6
 pytest
@@ -10,6 +9,7 @@ pycrypto==2.6.1
 python-dotenv==0.10.1
 google-cloud==0.34.0
 pytest-cov
-googletrans==2.4.0
 geocoder==1.38.1
 numpy==1.17.2
+Pillow==6.2.1
+requests==2.21.0

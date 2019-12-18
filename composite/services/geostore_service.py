@@ -1,6 +1,7 @@
 """Geostore SERVICE"""
 from CTRegisterMicroserviceFlask import request_to_microservice
 from composite.errors import GeostoreNotFound
+import logging
 
 
 class GeostoreService(object):
@@ -22,6 +23,7 @@ class GeostoreService(object):
         geostore = response.get('data', None).get('attributes', None)
         d['geojson'] = geostore.get('geojson', None)
         d['area_ha'] = geostore.get('areaHa', None)
+        d['bbox'] = geostore.get('bbox', None)
         return d
 
     @staticmethod
