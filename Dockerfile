@@ -24,6 +24,7 @@ RUN easy_install pip && pip install --upgrade pip
 RUN pip install gunicorn gevent setuptools
 
 RUN mkdir -p /opt/$NAME
+RUN mkdir -p /opt/$NAME/tmp_imgs
 RUN cd /opt/$NAME
 COPY requirements.txt /opt/$NAME/requirements.txt
 RUN cd /opt/$NAME && pip install -r requirements.txt
@@ -41,6 +42,7 @@ COPY ./$NAME /opt/$NAME/$NAME
 COPY ./microservice /opt/$NAME/microservice
 #COPY ./tests /opt/$NAME/tests
 RUN chown $USER:$USER /opt/$NAME
+RUN chown $USER:$USER /opt/$NAME/tmp_imgs
 
 # Tell Docker we are going to use this ports
 EXPOSE 4505
