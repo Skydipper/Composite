@@ -4,6 +4,7 @@ from flask import jsonify, Blueprint, send_file, send_from_directory
 import json
 from composite.routes.api import error
 from composite.services.analysis.composite_service import CompositeService
+from composite.utils.files import delete_old_files
 from composite.errors import CompositeError
 from composite.serializers import serialize_composite_output
 from composite.middleware import get_geo_by_hash, get_composite_params
@@ -29,16 +30,15 @@ def composite_maker(geojson, instrument, date_range, thumb_size, band_viz, get_d
         logging.error(f'[ROUTER]: {e.message}')
         return error(status=500, detail=e.message)
     if get_files:
+        delete_old_files()
         try:
             zipFile = f"/opt/composite/tmp_imgs/{data.get('rand_string')}.zip"
             with ZipFile(zipFile, 'w') as zipObj:
                 zipObj.write(data.get('surface_png'), arcname=f"{data.get('rand_string')}.png")
-                zipObj.write(data.get('surface_png'), arcname=f"{data.get('rand_string')}.tif")
+                zipObj.write(data.get('dem_tif'), arcname=f"{data.get('rand_string')}.tif")
             return send_file(zipFile, attachment_filename='surface.zip')
-            #return send_file(data.get('surface_png'), attachment_filename='surface.png')
-            #return send_from_directory('/opt/composite/tmp_imgs/', data.get('surface_png'), 'surface.png')
         except Exception as e:
-            return error(status=500, detail=e.message)
+            return error(status=500, detail= e.message)
     else:
         return jsonify(serialize_composite_output(data, 'composite_service')), 200
 

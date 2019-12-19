@@ -31,34 +31,36 @@ def get_composite_params(func):
     """Get instrument"""
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if request.method in ['GET', 'POST']:
-            instrument = request.args.get('instrument', False)
-            if not instrument:
-                instrument = 'landsat'
-            date_range = request.args.get('date_range', False)
-            thumb_size = request.args.get('thumb_size', False)
-            if not thumb_size:
-                thumb_size = [500, 500]
-            band_viz = request.args.get('band_viz', False)
-            if not band_viz:
-                band_viz = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 0.4}
-            else:
-                band_viz = json.loads(band_viz)
-            get_dem = request.args.get('get_dem', False)
-            if get_dem and get_dem.lower() == 'true':
-                get_dem = True
-            else:
-                get_dem = False
-            get_files = request.args.get('get_files', False)
-            if get_files and get_files.lower() == 'true':
-                get_files = True
-            else:
-                get_files = False
-            cloudscore_thresh = request.args.get('cloudscore_thresh', False)
-            if not cloudscore_thresh:
-                cloudscore_thresh = 5
-            else:
-                cloudscore_thresh = int(cloudscore_thresh)
+        instrument = request.args.get('instrument', False)
+        if not instrument:
+            instrument = 'landsat'
+        date_range = request.args.get('date_range', False)
+        tmp_thumb_size = request.args.get('thumb_size', False)
+        try:
+            thumb_size = [int(item) for item in tmp_thumb_size[1:-1].split(',')]
+        except:
+            thumb_size = [500, 500]
+        logging.info(f"[Middleware] thumb_size {type(thumb_size)}, {thumb_size}")
+        band_viz = request.args.get('band_viz', False)
+        if not band_viz:
+            band_viz = {'bands': ['B4', 'B3', 'B2'], 'min': 0, 'max': 0.4}
+        else:
+            band_viz = json.loads(band_viz)
+        get_dem = request.args.get('get_dem', False)
+        if get_dem and get_dem.lower() == 'true':
+            get_dem = True
+        else:
+            get_dem = False
+        get_files = request.args.get('get_files', False)
+        if get_files and get_files.lower() == 'true':
+            get_files = True
+        else:
+            get_files = False
+        cloudscore_thresh = request.args.get('cloudscore_thresh', False)
+        if not cloudscore_thresh:
+            cloudscore_thresh = 5
+        else:
+            cloudscore_thresh = int(cloudscore_thresh)
         logging.info(f"[Middleware] DATE RANGE: {date_range}")
         kwargs['get_dem'] = get_dem
         kwargs['get_files'] = get_files
