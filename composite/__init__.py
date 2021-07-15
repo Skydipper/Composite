@@ -3,6 +3,7 @@ import CTRegisterMicroserviceFlask
 import ee
 import logging
 import os
+import base64
 from flask import Flask
 from oauth2client.service_account import ServiceAccountCredentials
 from composite.config import SETTINGS
@@ -17,16 +18,12 @@ logging.basicConfig(
 )
 
 # Initilizing GEE
-gee = SETTINGS.get('gee')
-ee_user = gee.get('service_account')
-private_key_file = gee.get('privatekey_file')
-if private_key_file:
-    logging.info(f'Initilizing EE with privatekey.json credential file: {ee_user} | {private_key_file}')
-    credentials = ee.ServiceAccountCredentials(ee_user, private_key_file)
-    ee.Initialize(credentials, use_cloud_api=False)
-    ee.data.setDeadline(60000)
-else:
-    raise ValueError("privatekey.json file not found. Unable to authenticate EE.")
+EE_ACCOUNT = os.getenv('EE_ACCOUNT')
+EE_PRIVATE_KEY_FILE = base64.b64decode(os.getenv('EE_PRIVATE_KEY'))
+logging.debug(f"ee_user: {EE_ACCOUNT}")
+gee_credentials = ee.ServiceAccountCredentials(EE_ACCOUNT, key_data=EE_PRIVATE_KEY_FILE)
+ee.Initialize(gee_credentials)
+ee.data.setDeadline(60000)
 
 # Flask App
 app = Flask(__name__)
